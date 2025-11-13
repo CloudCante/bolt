@@ -1,0 +1,62 @@
+# Build directories
+build/
+cpp_etl/build/
+__pycache__/
+
+# Python cache
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# C++ build artifacts
+*.o
+*.d
+*.a
+*.so
+*.exe
+*.out
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+*.cmake
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Database files
+*.db
+*.sqlite
+
+# Logs
+*.log
+schedulers/logs/*.log
+
+# Test files
+test_*
+!test_*.cpp
+!test_*.sh
+
+# Config with secrets (keep template)
+config.py
+!config.py.template
+
+# Input/output data (don't commit actual data)
+input/data\ log/*.xls
+input/data\ log/*.xlsx
+queue/*.csv
+queue/archive/*.csv
+
+# Backup files
+db_backup/*.sql
+*.bak
+*.backup
+
