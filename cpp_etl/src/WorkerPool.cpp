@@ -53,6 +53,10 @@ void WorkerPool::stop() {
     std::cout << "WorkerPool stopped" << std::endl;
 }
 
+void WorkerPool::setSuccessCallback(SuccessCallback callback) {
+    successCallback_ = callback;
+}
+
 void WorkerPool::workerThread(size_t workerId) {
     std::cout << "[Worker #" << workerId << "] Started" << std::endl;
 
@@ -93,6 +97,11 @@ void WorkerPool::workerThread(size_t workerId) {
             
             jobQueue_.markCompleted(*job);
             totalSucceeded_.fetch_add(1);
+            
+            // Notify callback if set
+            if (successCallback_) {
+                successCallback_(job->fileType);
+            }
         } else {
             // Job failed
             std::string error = loader.getLastError();

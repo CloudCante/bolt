@@ -7,6 +7,7 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <functional>
 
 /**
  * WorkerPool - Manages worker threads that process jobs from JobQueue
@@ -22,6 +23,9 @@
  */
 class WorkerPool {
 public:
+    // Callback type for successful imports
+    using SuccessCallback = std::function<void(FileType fileType)>;
+
     /**
      * Constructor
      * @param numWorkers Number of worker threads to spawn
@@ -50,6 +54,12 @@ public:
      * Waits for current jobs to complete
      */
     void stop();
+
+    /**
+     * Set callback to call when import succeeds
+     * @param callback Function to call with FileType when job succeeds
+     */
+    void setSuccessCallback(SuccessCallback callback);
 
     /**
      * Check if workers are running
@@ -86,6 +96,9 @@ private:
     std::atomic<size_t> totalSucceeded_{0};
     std::atomic<size_t> totalFailed_{0};
     std::atomic<size_t> activeWorkers_{0};
+    
+    // Callback for successful imports
+    SuccessCallback successCallback_;
 
     /**
      * Worker thread function

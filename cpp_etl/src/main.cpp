@@ -5,6 +5,7 @@
 #include "FileConverter.h"
 #include "WorkerPool.h"
 #include "DatabaseLoader.h"
+#include "aggregation_manager.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -124,7 +125,24 @@ int main(int argc, char* argv[]) {
     JobQueue jobQueue(2); // Max 2 retries
     InputProcessor inputProcessor(inputDir, queueDir);
     WorkerPool workerPool(2, jobQueue, dbConfig); // 2 worker threads
+    AggregationManager aggManager; // Aggregation manager for post-import processing
     g_workerPool = &workerPool;
+
+    // Set up aggregation callback - triggered after successful imports
+    workerPool.setSuccessCallback([&aggManager](FileType fileType) {
+        // Map FileType to DataType and mark as pending
+        if (fileType == FileType::WORKSTATION) {
+            aggManager.mark_data_pending(DataType::WORKSTATION);
+        } else if (fileType == FileType::TESTBOARD) {
+            aggManager.mark_data_pending(DataType::TESTBOARD);
+        } else if (fileType == FileType::SNFN) {
+            // SNFN is a testboard aggregation type
+            aggManager.mark_data_pending(DataType::TESTBOARD);
+        }
+        
+        // Trigger aggregations (will run if not already running)
+        aggManager.trigger_pending_aggregations();
+    });
 
     // Create Input folder watcher (for conversion)
     FileWatcher inputWatcher(inputDir);
