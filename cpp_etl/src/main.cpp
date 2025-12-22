@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
     // Configuration
     //std::string inputDir = "./input";
     std::string inputDir = "../../../Fox_ETL/input";
-    std::string queueDir = "./queue";
+    std::string queueDir = "../queue";
 
     // Parse command line arguments (simplified for now)
     for (int i = 1; i < argc; i++) {
