@@ -92,7 +92,7 @@ void printStatus(const FileWatcher& inputWatcher, const FileWatcher& queueWatche
 int main(int argc, char* argv[]) {
     // Configuration
     //std::string inputDir = "./input";
-    std::string inputDir = "../../../Fox_ETL/input"
+    std::string inputDir = "../../../Fox_ETL/input";
     std::string queueDir = "./queue";
 
     // Parse command line arguments (simplified for now)
