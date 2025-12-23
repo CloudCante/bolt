@@ -4,6 +4,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
+#include <cerrno>
 
 namespace fs = std::filesystem;
 
@@ -19,7 +20,7 @@ bool InputProcessor::processFile(const std::string& filepath) {
     
     // Validate file exists
     if (access(filepath.c_str(), F_OK) != 0) {
-        lastError_ = "File does not exist: " + filepath;
+        lastError_ = "Cannot access: " + filepath + " (" + std::string(std::strerror(errno))+")";
         stats_.filesFailed++;
         return false;
     }

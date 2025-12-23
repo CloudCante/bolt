@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <filesystem>
 
 FileWatcher::FileWatcher(const std::string& watchPath)
     : watchPath_(watchPath)
@@ -34,6 +35,11 @@ bool FileWatcher::start() {
         std::cerr << "FileWatcher: Already running!" << std::endl;
         return false;
     }
+
+    namespace fs = std::filesystem;
+    std::error_code ec;
+    fs::path absWatch = fs::absolute(fs::path(watchPath_),ec);
+    if(!ec) watchPath_ = absWatch.string();
 
     // Initialize inotify
     inotifyFd_ = inotify_init1(IN_NONBLOCK);
@@ -121,11 +127,11 @@ void FileWatcher::watchLoop() {
                 
                 // Check if filename matches our patterns
                 if (filePatterns_.empty() || matchesPattern(filename)) {
-                    std::string fullPath = watchPath_ + "/" + filename;
+                    std::filesystem::path fullPath = std::filesystem::path(watchPath_) / filename;
                     
                     // Call callback if set
                     if (callback_) {
-                        callback_(fullPath);
+                        callback_(fullPath.string());
                     }
                     
                     fileCount_++;
